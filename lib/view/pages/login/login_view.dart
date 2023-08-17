@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trizi/view/login/login_page.dart';
+import 'package:trizi/view/pages/login/login_page.dart';
     
 class LoginView extends StatelessWidget {
 

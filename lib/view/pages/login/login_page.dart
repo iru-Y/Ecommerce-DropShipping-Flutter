@@ -7,7 +7,8 @@ import 'package:trizi/view/shared/button_large.dart.dart';
 import 'package:trizi/view/shared/form_login_register.dart';
 import 'package:trizi/view/shared/sign_signup.dart';
 
-import '../shared/header_widget.dart';
+import '../../shared/components/on_error_widget.dart';
+import '../../shared/header_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     userCubit = BlocProvider.of<UserCubit>(context);
+
     super.initState();
   }
 
@@ -59,14 +61,26 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   );
-                } else if (state is UserCubitLoading) {
-                  return const CircularProgressIndicator();
-                } else if (state is UserCubitLoaded) {
-                  Navigator.of(context).pushNamed(AppRoute.HOME);
-                } else {
-                  return const Text('deu ruim');
                 }
-                throw Exception("errro 2");
+                if (state is UserCubitLoading) {
+                  return const CircularProgressIndicator();
+                }
+
+                if (state is UserCubitLoaded) {
+                  Future.delayed(Duration.zero, () {
+                    Navigator.of(context).pushNamed(AppRoute.HOME);
+                    
+                  });
+                }
+
+                if (state is UserCubitError) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: OnErrorWidget(
+                        onConfirmBtnTap: context.read<UserCubit>().resetForm),
+                  );
+                }
+                return const SizedBox();
               },
             ),
             const SizedBox(height: 130),

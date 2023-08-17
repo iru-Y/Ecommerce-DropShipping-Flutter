@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:trizi/domain/controllers/user_controller.dart';
 
-import '../models/user.dart';
-
 part 'user_cubit_state.dart';
 
 class UserCubit extends Cubit<UserCubitState> {
@@ -17,9 +15,16 @@ class UserCubit extends Cubit<UserCubitState> {
 
     try {
       await loginController.login(login, password);
+
       emit(UserCubitLoaded());
+      await Future.delayed(const Duration(milliseconds: 500));
+      emit(UserCubitInitial());
     } catch (e) {
       emit(UserCubitError());
     }
+  }
+
+  void resetForm() {
+    emit(UserCubitInitial());
   }
 }

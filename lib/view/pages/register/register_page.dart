@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../domain/controllers/user_controller.dart';
-import '../../utils/custom_styles.dart';
-import '../shared/header_widget.dart';
-import '../shared/button_large.dart.dart';
-import '../shared/form_login_register.dart';
-import '../shared/sign_signup.dart';
+import '../../../domain/controllers/user_controller.dart';
+import '../../../utils/custom_styles.dart';
+import '../../shared/header_widget.dart';
+import '../../shared/button_large.dart.dart';
+import '../../shared/form_login_register.dart';
+import '../../shared/sign_signup.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);

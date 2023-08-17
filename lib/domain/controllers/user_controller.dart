@@ -17,6 +17,8 @@ class LoginController {
 
     throw Exception('Algo deu errado');
   }
+
+  
 }
 
 class RegisterController {

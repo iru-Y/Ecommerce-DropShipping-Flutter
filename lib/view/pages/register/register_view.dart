@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trizi/view/register/register_page.dart';
+import 'package:trizi/view/pages/register/register_page.dart';
     
 class RegisterView extends StatelessWidget {
 

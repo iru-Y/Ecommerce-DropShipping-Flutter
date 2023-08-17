@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trizi/domain/cubit/user_cubit.dart';
 import 'package:trizi/utils/routes.dart';
-import 'package:trizi/view/home/home_view.dart';
-import 'package:trizi/view/login/login_view.dart';
-import 'package:trizi/view/presentation/apresentation_view.dart';
-import 'package:trizi/view/register/register_view.dart';
+import 'package:trizi/view/pages/home/home_view.dart';
+import 'package:trizi/view/pages/login/login_view.dart';
+import 'package:trizi/view/pages/presentation/apresentation_view.dart';
+import 'package:trizi/view/pages/register/register_view.dart';
 
 void main() {
   runApp(const MyApp());
