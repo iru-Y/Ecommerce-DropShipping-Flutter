@@ -8,13 +8,27 @@ part 'user_cubit_state.dart';
 class UserCubit extends Cubit<UserCubitState> {
   UserCubit() : super(UserCubitInitial());
 
-  LoginController loginController = LoginController();
+  UserController userController = UserController();
 
   Future<void> getUser(String login, String password) async {
     emit(UserCubitLoading());
 
     try {
-      await loginController.login(login, password);
+      await userController.login(login, password);
+
+      emit(UserCubitLoaded());
+      await Future.delayed(const Duration(milliseconds: 500));
+      emit(UserCubitInitial());
+    } catch (e) {
+      emit(UserCubitError());
+    }
+  }
+
+  Future<void> postUser(String login, String password) async {
+    emit(UserCubitLoading());
+
+    try {
+      await userController.register(login, password);
 
       emit(UserCubitLoaded());
       await Future.delayed(const Duration(milliseconds: 500));
@@ -27,4 +41,6 @@ class UserCubit extends Cubit<UserCubitState> {
   void resetForm() {
     emit(UserCubitInitial());
   }
+
+  void checkTerms(bool check) {}
 }

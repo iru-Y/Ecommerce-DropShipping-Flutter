@@ -77,6 +77,9 @@ class _LoginPageState extends State<LoginPage> {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: OnErrorWidget(
+                      btnText: 'Recarregar',
+                      title: 'Login e senha inválidos',
+                      content: 'Por favor, verifique suas credenciais',
                         onConfirmBtnTap: context.read<UserCubit>().resetForm),
                   );
                 }
@@ -86,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 130),
             ButtonLarge(
               onPressed: () async {
-                await userCubit.getUser(
+                await userCubit.postUser(
                     loginController.text, passwordController.text);
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,

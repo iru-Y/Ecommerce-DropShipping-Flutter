@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../domain/controllers/user_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trizi/utils/routes.dart';
+import 'package:trizi/view/shared/components/on_error_widget.dart';
+import '../../../domain/cubit/user_cubit.dart';
 import '../../../utils/custom_styles.dart';
 import '../../shared/header_widget.dart';
 import '../../shared/button_large.dart.dart';
@@ -14,11 +17,15 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final RegisterController registerController = RegisterController();
+  late final UserCubit userCubit;
+
+  final loginController = TextEditingController();
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
   void initState() {
-    registerController;
+    userCubit = BlocProvider.of<UserCubit>(context);
     super.initState();
   }
 
@@ -32,34 +39,70 @@ class _RegisterPageState extends State<RegisterPage> {
               txt1: 'Bem-vindo de volta',
               txt2: 'Vamos conectar você',
             ),
-            FormLoginRegister(
-              editingController: registerController.mailController,
-              prefixIcon: 'assets/icons/mail_icon.png',
-              title: 'Email',
-              inputType: TextInputType.emailAddress,
-            ),
-            FormLoginRegister(
-              editingController: registerController.loginController,
-              prefixIcon: 'assets/icons/person_login_icon.png',
-              title: 'Usuário ou Email',
-              inputType: TextInputType.text,
-            ),
-            FormLoginRegister(
-              editingController: registerController.passwordController,
-              prefixIcon: 'assets/icons/password_login_icon.png',
-              title: 'Entrar',
-              inputType: TextInputType.visiblePassword,
-              sufixIcon: 'assets/icons/hidde_password_icon.png',
-            ),
-            SizedBox(height: 20),
+            BlocBuilder(
+                bloc: userCubit,
+                builder: (context, state) {
+                  if (state is UserCubitInitial) {
+                    return Column(
+                      children: [
+                        FormLoginRegister(
+                          editingController: emailController,
+                          prefixIcon: 'assets/icons/mail_icon.png',
+                          title: 'Email',
+                          inputType: TextInputType.emailAddress,
+                        ),
+                        FormLoginRegister(
+                          editingController: loginController,
+                          prefixIcon: 'assets/icons/person_login_icon.png',
+                          title: 'Usuário ou Email',
+                          inputType: TextInputType.text,
+                        ),
+                        FormLoginRegister(
+                          editingController: passwordController,
+                          prefixIcon: 'assets/icons/password_login_icon.png',
+                          title: 'Entrar',
+                          inputType: TextInputType.visiblePassword,
+                          sufixIcon: 'assets/icons/hidde_password_icon.png',
+                        ),
+                      ],
+                    );
+                  }
+                  if (state is UserCubitLoading) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  if (state is UserCubitLoaded) {
+                    Future.delayed(Duration.zero, () {
+                      Navigator.of(context)
+                          .pushReplacementNamed(AppRoute.LOGIN);
+                    });
+                  }
+
+                  if (state is UserCubitError) {
+                    return SizedBox(
+                      child: OnErrorWidget(
+                        btnText: 'Recarregar',
+                        title: 'Erro de comunicação',
+                        content: 'Falha ao comunicar-se com o servidor, tente novamente',
+                        onConfirmBtnTap: () {
+                          context.read<UserCubit>().resetForm;
+                        },
+                      ),
+                    );
+                  }
+                  throw Exception('Algo de errado não está certo');
+                }),
+            const SizedBox(height: 20),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Checkbox(
                     value: isChecked,
-                    onChanged: (bool? value) => setState(() {
-                          isChecked = value!;
-                        })),
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isChecked = value!;
+                      });
+                    }),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -69,10 +112,21 @@ class _RegisterPageState extends State<RegisterPage> {
                 )
               ],
             ),
-            const SizedBox(height:30),
+            const SizedBox(height: 30),
             ButtonLarge(
-              onPressed: () {
-                registerController.register(context);
+              onPressed: () async {
+                if (!isChecked) {
+                  await userCubit.postUser(loginController.text,
+                      passwordController.text);
+                } else {
+                  OnErrorWidget(
+                    btnText: 'Recarregar',
+                    title: 'Por favor, preencha os campos',
+                    content: 'Os campos não podem estar vazios',
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).pop();
+                  });
+                }
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,
               text: 'REGISTRAR',
