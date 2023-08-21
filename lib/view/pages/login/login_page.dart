@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trizi/domain/cubit/user_cubit.dart';
 import 'package:trizi/utils/custom_styles.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/button_large.dart.dart';
 import 'package:trizi/view/shared/form_login_register.dart';
 import 'package:trizi/view/shared/sign_signup.dart';
 
+import '../../../domain/cubit/auth_cubit_cubit.dart';
 import '../../shared/components/on_error_widget.dart';
 import '../../shared/header_widget.dart';
 
@@ -18,14 +18,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late final UserCubit userCubit;
+  late final AuthCubit authCubit;
 
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   void initState() {
-    userCubit = BlocProvider.of<UserCubit>(context);
+    authCubit = BlocProvider.of<AuthCubit>(context);
 
     super.initState();
   }
@@ -41,9 +41,9 @@ class _LoginPageState extends State<LoginPage> {
               txt2: 'Vamos conectar você',
             ),
             BlocBuilder(
-              bloc: userCubit,
+              bloc: authCubit,
               builder: (context, state) {
-                if (state is UserCubitInitial) {
+                if (state is AuthCubitInitial) {
                   return Column(
                     children: [
                       FormLoginRegister(
@@ -62,25 +62,24 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   );
                 }
-                if (state is UserCubitLoading) {
+                if (state is AuthCubitLoading) {
                   return const CircularProgressIndicator();
                 }
 
-                if (state is UserCubitLoaded) {
+                if (state is AuthCubitLoaded) {
                   Future.delayed(Duration.zero, () {
                     Navigator.of(context).pushNamed(AppRoute.HOME);
-                    
                   });
                 }
 
-                if (state is UserCubitError) {
+                if (state is AuthCubitError) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: OnErrorWidget(
-                      btnText: 'Recarregar',
-                      title: 'Login e senha inválidos',
-                      content: 'Por favor, verifique suas credenciais',
-                        onConfirmBtnTap: context.read<UserCubit>().resetForm),
+                        btnText: 'Recarregar',
+                        title: 'Login e senha inválidos',
+                        content: 'Por favor, verifique suas credenciais',
+                        onConfirmBtnTap: context.read<AuthCubit>().resetForm),
                   );
                 }
                 return const SizedBox();
@@ -89,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 130),
             ButtonLarge(
               onPressed: () async {
-                await userCubit.postUser(
+                await authCubit.getToken(
                     loginController.text, passwordController.text);
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,

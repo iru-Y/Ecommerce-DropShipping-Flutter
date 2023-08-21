@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/components/on_error_widget.dart';
-import '../../../domain/cubit/user_cubit.dart';
+import '../../../domain/cubit/auth_cubit_cubit.dart';
 import '../../../utils/custom_styles.dart';
 import '../../shared/header_widget.dart';
 import '../../shared/button_large.dart.dart';
@@ -17,7 +17,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late final UserCubit userCubit;
+  late final AuthCubit userCubit;
 
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
@@ -25,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void initState() {
-    userCubit = BlocProvider.of<UserCubit>(context);
+    userCubit = BlocProvider.of<AuthCubit>(context);
     super.initState();
   }
 
@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
             BlocBuilder(
                 bloc: userCubit,
                 builder: (context, state) {
-                  if (state is UserCubitInitial) {
+                  if (state is AuthCubitInitial) {
                     return Column(
                       children: [
                         FormLoginRegister(
@@ -67,25 +67,26 @@ class _RegisterPageState extends State<RegisterPage> {
                       ],
                     );
                   }
-                  if (state is UserCubitLoading) {
+                  if (state is AuthCubitLoading) {
                     return const CircularProgressIndicator();
                   }
 
-                  if (state is UserCubitLoaded) {
+                  if (state is AuthCubitLoaded) {
                     Future.delayed(Duration.zero, () {
                       Navigator.of(context)
                           .pushReplacementNamed(AppRoute.LOGIN);
                     });
                   }
 
-                  if (state is UserCubitError) {
+                  if (state is AuthCubitError) {
                     return SizedBox(
                       child: OnErrorWidget(
                         btnText: 'Recarregar',
                         title: 'Erro de comunicação',
-                        content: 'Falha ao comunicar-se com o servidor, tente novamente',
+                        content:
+                            'Falha ao comunicar-se com o servidor, tente novamente',
                         onConfirmBtnTap: () {
-                          context.read<UserCubit>().resetForm;
+                          context.read<AuthCubit>().resetForm;
                         },
                       ),
                     );
@@ -116,16 +117,16 @@ class _RegisterPageState extends State<RegisterPage> {
             ButtonLarge(
               onPressed: () async {
                 if (!isChecked) {
-                  await userCubit.postUser(loginController.text,
-                      passwordController.text);
+                  await userCubit.getToken(
+                      loginController.text, passwordController.text);
                 } else {
                   OnErrorWidget(
-                    btnText: 'Recarregar',
-                    title: 'Por favor, preencha os campos',
-                    content: 'Os campos não podem estar vazios',
-                    onConfirmBtnTap: () {
-                    Navigator.of(context).pop();
-                  });
+                      btnText: 'Recarregar',
+                      title: 'Por favor, preencha os campos',
+                      content: 'Os campos não podem estar vazios',
+                      onConfirmBtnTap: () {
+                        Navigator.of(context).pop();
+                      });
                 }
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,

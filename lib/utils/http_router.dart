@@ -1,1 +1,1 @@
-const apiPath = 'http://192.168.3.2:8080';
+const apiPath = 'http://192.168.3.12:8080';
