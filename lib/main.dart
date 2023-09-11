@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trizi/domain/cubit/auth_cubit_cubit.dart';
+import 'package:trizi/domain/cubit/user_cubit.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/pages/home/home_view.dart';
 import 'package:trizi/view/pages/login/login_view.dart';
@@ -19,9 +20,9 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthCubit(), // Create your UserCubit instance
+          create: (context) => AuthCubit(),
         ),
-        // Add more BlocProviders if needed
+        BlocProvider(create: (context) => UserCubit())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

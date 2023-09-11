@@ -7,6 +7,8 @@ final class AuthCubitInitial extends AuthCubitState {}
 
 final class AuthCubitLoading extends AuthCubitState {}
 
-final class AuthCubitLoaded extends AuthCubitState {}
+final class AuthCubitLoaded extends AuthCubitState {
+   
+}
 
 final class AuthCubitError extends AuthCubitState {}

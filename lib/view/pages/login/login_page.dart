@@ -73,11 +73,21 @@ class _LoginPageState extends State<LoginPage> {
                 }
 
                 if (state is AuthCubitError) {
+                  if (loginController.text.isEmpty || passwordController.text.isEmpty) {
+                    return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: OnErrorWidget(
+                        btnText: 'Recarregar',
+                        title: 'Login ou senha não podem ficar nulos',
+                        content: 'Por favor, preencha todos os campos',
+                        onConfirmBtnTap: context.read<AuthCubit>().resetForm),
+                  );
+                  }
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: OnErrorWidget(
                         btnText: 'Recarregar',
-                        title: 'Login e senha inválidos',
+                        title: 'Login ou senha inválidos',
                         content: 'Por favor, verifique suas credenciais',
                         onConfirmBtnTap: context.read<AuthCubit>().resetForm),
                   );
@@ -89,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
             ButtonLarge(
               onPressed: () async {
                 await authCubit.getToken(
-                    loginController.text, passwordController.text);
+                    loginController.text.trim(), passwordController.text.trim());
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,
               text: 'ENTRAR',

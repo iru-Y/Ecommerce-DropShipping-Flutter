@@ -10,19 +10,18 @@ class AuthCubit extends Cubit<AuthCubitState> {
 
   Future<void> getToken(String login, String password) async {
     emit(AuthCubitLoading());
-    
+
     try {
       await authRepository.generetadToken(login, password);
       emit(AuthCubitLoaded());
       await Future.delayed(const Duration(milliseconds: 500));
       emit(AuthCubitInitial());
     } catch (e) {
-      emit(AuthCubitError());
+        emit(AuthCubitError());
     }
   }
 
   void resetForm() {
     emit(AuthCubitInitial());
   }
-
 }

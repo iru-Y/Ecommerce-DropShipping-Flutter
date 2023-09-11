@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:trizi/utils/custom_styles.dart';
 import 'package:trizi/utils/fonts.dart';
 import 'package:trizi/view/shared/button_large.dart.dart';
+import 'package:trizi/view/shared/sign_signup.dart';
 
 class AprensentationView extends StatelessWidget {
   const AprensentationView({Key? key}) : super(key: key);
@@ -50,8 +51,14 @@ class AprensentationView extends StatelessWidget {
                 text: 'Começar',
                 sufixIcon: 'assets/icons/arrow-right_icon.png',
                 onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                })
+                  Navigator.pushNamed(context, '/home');
+                }),
+               SignSignup(
+              text1: 'Já tem uma conta? ',
+              text2: 'Entrar',
+              onTap: () {
+                Navigator.pushNamed(context, '/login');
+              })
           ],
         ),
       ))
