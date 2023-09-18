@@ -8,9 +8,8 @@ final class UserCubitInitial extends UserState {}
 final class UserCubitLoading extends UserState {}
 
 final class UserCubitLoaded extends UserState {
-  final List<User>? users;
-  final User? user;
-
+  final List<UserDto>? users;
+  final UserDto? user;
   UserCubitLoaded({this.users, this.user});
 
   @override

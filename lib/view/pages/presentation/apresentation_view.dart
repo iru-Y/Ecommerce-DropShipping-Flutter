@@ -37,7 +37,7 @@ class AprensentationView extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              'Bem-vindo a Edson Store',
+              'Bem-vindo a App Store',
               style: DMSANS_BLACK,
             ),
             const SizedBox(height: 20),

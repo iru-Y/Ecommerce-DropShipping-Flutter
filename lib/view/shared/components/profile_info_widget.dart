@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trizi/domain/cubit/user_cubit.dart';
+import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/components/on_error_widget.dart';
 
 class ProfileInfoWidget extends StatefulWidget {
@@ -16,7 +17,7 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
   @override
   void initState() {
     userCubit = BlocProvider.of<UserCubit>(context);
-    userCubit.getByLogin();
+    userCubit.getByLogin('pistoled');
     super.initState();
   }
 
@@ -25,7 +26,7 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: BlocBuilder<UserCubit, UserState>(
             bloc: userCubit,
             builder: (context, state) {
@@ -34,21 +35,53 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
               }
               if (state is UserCubitLoaded) {
                 final user = state.user;
-                return SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Card(
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                   const Expanded(child: SizedBox()),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: Colors.blue),
                         margin: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(3),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                             CircleAvatar(
-                               radius: 25,
-                               backgroundImage: NetworkImage(
-                                   '${user?.profileImage}', scale: 2),
-                             ),
-                            Text('${user?.login}')
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: user?.profileImage? == null ?
+                             GestureDetector(
+                              onTap: () =>
+                              Navigator.of(context).pushNamed(AppRoute.REGISTER),
+                              child:  Image.asset('assets/icons/add_new_profile_icon.png',
+                              scale: 11,
+                              color: Colors.white,) ,
+                             )
+                            : CircleAvatar(
+                                radius: 25,
+                                backgroundImage:NetworkImage(
+                                    user?.profileImage ?? "", scale: 2)
+                              ),
+                            ),
+                                Expanded(
+                                  child: Text(
+                                 (user?.name ?? 'Cadastre-se') +
+                                 (' ') +
+                                 (user?.lastName ?? ''),
+                                  style: const TextStyle(
+                                    color: Colors.white
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1),
+                                ),
                           ],
-                        )));
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               }
               if (state is UserCubitError) {
                 return OnErrorWidget(
@@ -57,7 +90,7 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
                     content: 'content',
                     onConfirmBtnTap: () => Navigator.of(context).pop());
               }
-              return const SizedBox();
+              throw Exception('deu ruim aqui');
             },
           ),
         ),

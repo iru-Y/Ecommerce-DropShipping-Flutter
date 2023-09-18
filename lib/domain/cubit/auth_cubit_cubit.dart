@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
+// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
+
+import 'package:trizi/domain/models/auth.dart';
 import 'package:trizi/domain/repositories/auth_repository.dart';
 
 part 'auth_cubit_state.dart';
@@ -8,16 +11,16 @@ class AuthCubit extends Cubit<AuthCubitState> {
   AuthCubit() : super(AuthCubitInitial());
   AuthRepository authRepository = AuthRepository();
 
-  Future<void> getToken(String login, String password) async {
+  Future<Auth?> getToken(String login, String password) async {
     emit(AuthCubitLoading());
 
     try {
-      await authRepository.generetadToken(login, password);
+      final token = await authRepository.generateToken(login, password);
       emit(AuthCubitLoaded());
-      await Future.delayed(const Duration(milliseconds: 500));
-      emit(AuthCubitInitial());
+      return token;
     } catch (e) {
-        emit(AuthCubitError());
+      emit(AuthCubitError());
+      rethrow;
     }
   }
 

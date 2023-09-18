@@ -5,6 +5,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text('Seu Aplicativo');
+    return Column(
+      children: [
+        Text('Navegue por categorias'),
+        
+      ],
+    );
   }
 }

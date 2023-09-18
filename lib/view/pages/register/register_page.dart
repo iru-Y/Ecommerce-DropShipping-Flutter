@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trizi/domain/cubit/user_cubit.dart';
+import 'package:trizi/domain/dtos/user_dto.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/components/on_error_widget.dart';
-import '../../../domain/cubit/auth_cubit_cubit.dart';
 import '../../../utils/custom_styles.dart';
 import '../../shared/header_widget.dart';
 import '../../shared/button_large.dart.dart';
@@ -17,15 +18,18 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late final AuthCubit userCubit;
+  late final UserCubit userCubit;
 
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
 
+  UserDto userDto = UserDto();
+
   @override
   void initState() {
-    userCubit = BlocProvider.of<AuthCubit>(context);
+    userCubit = BlocProvider.of<UserCubit>(context);
+    userDto;
     super.initState();
   }
 
@@ -42,7 +46,10 @@ class _RegisterPageState extends State<RegisterPage> {
             BlocBuilder(
                 bloc: userCubit,
                 builder: (context, state) {
-                  if (state is AuthCubitInitial) {
+                  if (state is UserCubitLoading) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is UserCubitInitial) {
                     return Column(
                       children: [
                         FormLoginRegister(
@@ -54,31 +61,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         FormLoginRegister(
                           editingController: loginController,
                           prefixIcon: 'assets/icons/person_login_icon.png',
-                          title: 'Usuário ou Email',
+                          title: 'Usuário',
                           inputType: TextInputType.text,
                         ),
                         FormLoginRegister(
                           editingController: passwordController,
                           prefixIcon: 'assets/icons/password_login_icon.png',
-                          title: 'Entrar',
+                          title: 'Senha',
                           inputType: TextInputType.visiblePassword,
                           sufixIcon: 'assets/icons/hidde_password_icon.png',
                         ),
                       ],
                     );
                   }
-                  if (state is AuthCubitLoading) {
-                    return const CircularProgressIndicator();
-                  }
-
-                  if (state is AuthCubitLoaded) {
-                    Future.delayed(Duration.zero, () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(AppRoute.LOGIN);
-                    });
-                  }
-
-                  if (state is AuthCubitError) {
+                  if (state is UserCubitError) {
                     return SizedBox(
                       child: OnErrorWidget(
                         btnText: 'Recarregar',
@@ -86,12 +82,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         content:
                             'Falha ao comunicar-se com o servidor, tente novamente',
                         onConfirmBtnTap: () {
-                          context.read<AuthCubit>().resetForm;
+                          context.read<UserCubit>().resetForm();
                         },
                       ),
                     );
                   }
-                  throw Exception('Algo de errado não está certo');
+
+                  if (state is UserCubitLoaded) {
+                    Future.delayed(Duration.zero, () {
+                      context.read<UserCubit>().resetForm();
+                      Navigator.of(context).pushNamed(AppRoute.LOGIN);
+                    });
+                  }
+                  return SizedBox();
                 }),
             const SizedBox(height: 20),
             Row(
@@ -113,12 +116,22 @@ class _RegisterPageState extends State<RegisterPage> {
                 )
               ],
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 200),
             ButtonLarge(
               onPressed: () async {
-                if (!isChecked) {
-                  await userCubit.getToken(
-                      loginController.text, passwordController.text);
+                if (isChecked) {
+                  final u = userDto.login = loginController.text;
+                  final p = userDto.password = passwordController.text;
+                  final m = userDto.mail = emailController.text;
+                  final user = UserDto(login: u, password: p, mail: m);
+                  await userCubit.post(user);
+                  OnErrorWidget(
+                    btnText: 'ok',
+                    content: 'ok',
+                    onConfirmBtnTap: () =>
+                        Navigator.of(context).pushNamed(AppRoute.LOGIN),
+                    title: 'ok',
+                  );
                 } else {
                   OnErrorWidget(
                       btnText: 'Recarregar',

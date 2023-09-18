@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trizi/domain/dtos/user_dto.dart';
 import 'package:trizi/utils/custom_styles.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/button_large.dart.dart';
@@ -73,15 +74,16 @@ class _LoginPageState extends State<LoginPage> {
                 }
 
                 if (state is AuthCubitError) {
-                  if (loginController.text.isEmpty || passwordController.text.isEmpty) {
+                  if (loginController.text.isEmpty ||
+                      passwordController.text.isEmpty) {
                     return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: OnErrorWidget(
-                        btnText: 'Recarregar',
-                        title: 'Login ou senha não podem ficar nulos',
-                        content: 'Por favor, preencha todos os campos',
-                        onConfirmBtnTap: context.read<AuthCubit>().resetForm),
-                  );
+                      padding: const EdgeInsets.all(8.0),
+                      child: OnErrorWidget(
+                          btnText: 'Recarregar',
+                          title: 'Login ou senha não podem ficar nulos',
+                          content: 'Por favor, preencha todos os campos',
+                          onConfirmBtnTap: context.read<AuthCubit>().resetForm),
+                    );
                   }
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -95,11 +97,11 @@ class _LoginPageState extends State<LoginPage> {
                 return const SizedBox();
               },
             ),
-            const SizedBox(height: 130),
+            const SizedBox(height: 300),
             ButtonLarge(
               onPressed: () async {
                 await authCubit.getToken(
-                    loginController.text.trim(), passwordController.text.trim());
+                    loginController.text.trim(), passwordController.text);
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,
               text: 'ENTRAR',
