@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trizi/domain/cubit/auth_cubit_cubit.dart';
 import 'package:trizi/domain/cubit/user_cubit.dart';
 import 'package:trizi/domain/dtos/user_dto.dart';
 import 'package:trizi/utils/routes.dart';
@@ -19,149 +20,249 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   late final UserCubit userCubit;
-
+  late final AuthCubit authCubit;
   final loginController = TextEditingController();
-  final passwordController = TextEditingController();
   final emailController = TextEditingController();
-
-  UserDto userDto = UserDto();
+  final passwordController = TextEditingController();
+  final confirmPassController = TextEditingController();
+  final nameController = TextEditingController();
+  final lastNameController = TextEditingController();
 
   @override
   void initState() {
     userCubit = BlocProvider.of<UserCubit>(context);
-    userDto;
     super.initState();
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const HeaderWidget(
-              txt1: 'Bem-vindo de volta',
-              txt2: 'Vamos conectar você',
-            ),
-            BlocBuilder(
-                bloc: userCubit,
-                builder: (context, state) {
-                  if (state is UserCubitLoading) {
-                    return const CircularProgressIndicator();
-                  }
-                  if (state is UserCubitInitial) {
-                    return Column(
-                      children: [
-                        FormLoginRegister(
-                          editingController: emailController,
-                          prefixIcon: 'assets/icons/mail_icon.png',
-                          title: 'Email',
-                          inputType: TextInputType.emailAddress,
-                        ),
-                        FormLoginRegister(
-                          editingController: loginController,
-                          prefixIcon: 'assets/icons/person_login_icon.png',
-                          title: 'Usuário',
-                          inputType: TextInputType.text,
-                        ),
-                        FormLoginRegister(
-                          editingController: passwordController,
-                          prefixIcon: 'assets/icons/password_login_icon.png',
-                          title: 'Senha',
-                          inputType: TextInputType.visiblePassword,
-                          sufixIcon: 'assets/icons/hidde_password_icon.png',
-                        ),
-                      ],
-                    );
-                  }
-                  if (state is UserCubitError) {
-                    return SizedBox(
-                      child: OnErrorWidget(
-                        btnText: 'Recarregar',
-                        title: 'Erro de comunicação',
-                        content:
-                            'Falha ao comunicar-se com o servidor, tente novamente',
-                        onConfirmBtnTap: () {
-                          context.read<UserCubit>().resetForm();
-                        },
-                      ),
-                    );
-                  }
-
-                  if (state is UserCubitLoaded) {
-                    Future.delayed(Duration.zero, () {
-                      context.read<UserCubit>().resetForm();
-                      Navigator.of(context).pushNamed(AppRoute.LOGIN);
-                    });
-                  }
-                  return SizedBox();
-                }),
-            const SizedBox(height: 20),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Checkbox(
-                    value: isChecked,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isChecked = value!;
-                      });
-                    }),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const HeaderWidget(
+            txt1: 'Cadastre-se',
+            txt2: 'Preencha com os seus dados para criar uma nova conta',
+          ),
+          BlocBuilder(
+            bloc: userCubit,
+            builder: (context, state) {
+              if (state is UserCubitLoading) {
+                return const CircularProgressIndicator();
+              }
+              if (state is UserCubitInitial) {
+                return Column(
                   children: [
-                    Text('Ao criar uma conta, você concorda'),
-                    Text('Com nossos termos e condições')
+                    ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      children: [
+                        Stepper(
+                        currentStep: currentStep,
+                        onStepContinue: () {
+                          if (currentStep < 2) {
+                            setState(() {
+                              currentStep++;
+                            });
+                          } else {
+                            if (isChecked) {
+                              () async {
+                                final user = UserDto(
+                                  name: nameController.text,
+                                  lastName: lastNameController.text,
+                                  login: loginController.text,
+                                  password: passwordController.text,
+                                  mail: emailController.text,
+                                );
+                                if (confirmPassController.text !=
+                                    passwordController.text) {
+                                  const Text(
+                                    'as senhas não coincidem',
+                                    style: TextStyle(color: Colors.red),
+                                  );
+                                }
+                                await userCubit.post(user);
+                              };
+                            } else {
+                              OnErrorWidget(
+                                btnText: 'Recarregar',
+                                title: 'Por favor, preencha os campos',
+                                content: 'Os campos não podem estar vazios',
+                                onConfirmBtnTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            }
+                          }
+                        },
+                        onStepCancel: () {
+                          if (currentStep > 0) {
+                            setState(() {
+                              currentStep--;
+                            });
+                          }
+                        },
+                        steps: [
+                          Step(
+                            title: const Text('Informações Pessoais'),
+                            content: Column(
+                              children: [
+                                FormLoginRegister(
+                                  editingController: emailController,
+                                  prefixIcon: 'assets/icons/mail_icon.png',
+                                  title: 'Email',
+                                  inputType: TextInputType.emailAddress,
+                                ),
+                                FormLoginRegister(
+                                  editingController: loginController,
+                                  prefixIcon:
+                                      'assets/icons/person_login_icon.png',
+                                  title: 'Usuário',
+                                  inputType: TextInputType.text,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Step(
+                            title: const Text('Informações de Contato'),
+                            content: Column(
+                              children: [
+                                FormLoginRegister(
+                                  editingController: nameController,
+                                  prefixIcon:
+                                      'assets/icons/password_login_icon.png',
+                                  title: 'Senha 1',
+                                  inputType: TextInputType.visiblePassword,
+                                  sufixIcon:
+                                      'assets/icons/hidde_password_icon.png',
+                                ),
+                                FormLoginRegister(
+                                  editingController: lastNameController,
+                                  prefixIcon:
+                                      'assets/icons/password_login_icon.png',
+                                  title: 'Senha 2',
+                                  inputType: TextInputType.visiblePassword,
+                                  sufixIcon:
+                                      'assets/icons/hidde_password_icon.png',
+                                ),
+                                FormLoginRegister(
+                                  editingController: emailController,
+                                  prefixIcon:
+                                      'assets/icons/password_login_icon.png',
+                                  title: 'Senha 3',
+                                  inputType: TextInputType.visiblePassword,
+                                  sufixIcon:
+                                      'assets/icons/hidde_password_icon.png',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Step(
+                            title: Text('Confirme'),
+                            content: Column(
+                              children: [
+                                // Adicione campos de confirmação aqui, se necessário
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                  ]),
                   ],
-                )
-              ],
-            ),
-            const SizedBox(height: 200),
-            ButtonLarge(
-              onPressed: () async {
-                if (isChecked) {
-                  final u = userDto.login = loginController.text;
-                  final p = userDto.password = passwordController.text;
-                  final m = userDto.mail = emailController.text;
-                  final user = UserDto(login: u, password: p, mail: m);
-                  await userCubit.post(user);
-                  OnErrorWidget(
-                    btnText: 'ok',
-                    content: 'ok',
-                    onConfirmBtnTap: () =>
-                        Navigator.of(context).pushNamed(AppRoute.LOGIN),
-                    title: 'ok',
+                );
+              }
+              if (state is UserCubitError) {
+                return SizedBox(
+                  child: OnErrorWidget(
+                    btnText: 'Recarregar',
+                    title: 'Erro de comunicação',
+                    content:
+                        'Falha ao comunicar-se com o servidor, tente novamente',
+                    onConfirmBtnTap: () {
+                      context.read<UserCubit>().resetForm();
+                    },
+                  ),
+                );
+              }
+
+              if (state is UserCubitLoaded) {
+                Future.delayed(Duration.zero, () {
+                  context.read<UserCubit>().resetForm();
+                  Navigator.of(context).pushNamed(AppRoute.LOGIN);
+                });
+              }
+              return const SizedBox();
+            },
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Checkbox(
+                value: !isChecked,
+                onChanged: (_) {
+                  setState(() {
+                    isChecked = false;
+                  });
+                },
+              ),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Ao criar uma conta, você concorda'),
+                  Text('Com nossos termos e condições')
+                ],
+              )
+            ],
+          ),
+          ButtonLarge(
+            onPressed: () async {
+              if (isChecked) {
+                final user = UserDto(
+                  name: nameController.text,
+                  lastName: lastNameController.text,
+                  login: loginController.text,
+                  password: passwordController.text,
+                  mail: emailController.text,
+                );
+                if (confirmPassController.text != passwordController.text) {
+                  const Text(
+                    'as senhas não coincidem',
+                    style: TextStyle(color: Colors.red),
                   );
-                } else {
-                  OnErrorWidget(
-                      btnText: 'Recarregar',
-                      title: 'Por favor, preencha os campos',
-                      content: 'Os campos não podem estar vazios',
-                      onConfirmBtnTap: () {
-                        Navigator.of(context).pop();
-                      });
                 }
-              },
-              backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,
-              text: 'REGISTRAR',
-              sufixIcon: 'assets/icons/btn_sign_icon.png',
-            ),
-            SignSignup(
-              text1: 'Já tem uma conta? ',
-              text2: 'Entrar',
-              onTap: () {
-                Navigator.pushNamed(context, '/login');
-              },
-            ),
-            ButtonLarge(
-              onPressed: () {},
-              backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_2,
-              sufixIcon: 'assets/icons/facebook_icon.png',
-              text: 'Conecte com o Facebook',
-            ),
-          ],
-        ));
+                await userCubit.post(user);
+              } else {
+                OnErrorWidget(
+                  btnText: 'Recarregar',
+                  title: 'Por favor, preencha os campos',
+                  content: 'Os campos não podem estar vazios',
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).pop();
+                  },
+                );
+              }
+            },
+            backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,
+            text: 'REGISTRAR',
+            sufixIcon: 'assets/icons/btn_sign_icon.png',
+          ),
+          SignSignup(
+            text1: 'Já tem uma conta? ',
+            text2: 'Entrar',
+            onTap: () {
+              Navigator.pushNamed(context, '/login');
+            },
+          ),
+          ButtonLarge(
+            onPressed: () {},
+            backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_2,
+            sufixIcon: 'assets/icons/facebook_icon.png',
+            text: 'Conecte com o Facebook',
+          ),
+        ],
+      ),
+    );
   }
 }
-
-bool isChecked = false;
+bool isChecked = true;
+int currentStep = 0;

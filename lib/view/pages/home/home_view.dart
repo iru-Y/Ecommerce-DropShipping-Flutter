@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:trizi/utils/dimens.dart';
 import 'package:trizi/view/pages/home/home_page.dart';
-import 'package:trizi/view/shared/components/profile_info_widget.dart';
 import 'package:trizi/view/shared/list_product.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
         child: Scaffold(
             body: SingleChildScrollView(
-                child: Column(children: [
-      const ProfileInfoWidget(),
-      SizedBox(height: Dimens.getHeightPercentage(context, 0.05)),
-      const HomePage(),
-      SizedBox(height: Dimens.getHeightPercentage(context, 0.05)),
-      const ListProduct()
-    ]))));
+      child: Column(children: [
+        HomeHeader(),
+        SizedBox(
+          height: 10,
+        ),
+        Divider(
+          height: 3,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Text('Recomendados para você')),
+        ListProduct()
+      ]),
+    )
+    ));
   }
 }

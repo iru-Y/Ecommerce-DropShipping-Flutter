@@ -16,9 +16,8 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
 
   @override
   void initState() {
-    userCubit = BlocProvider.of<UserCubit>(context);
-    userCubit.getByLogin('pistoled');
     super.initState();
+    userCubit = BlocProvider.of<UserCubit>(context);
   }
 
   @override
@@ -33,64 +32,68 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
               if (state is UserCubitLoading) {
                 return const CircularProgressIndicator();
               }
-              if (state is UserCubitLoaded) {
-                final user = state.user;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                   const Expanded(child: SizedBox()),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
+              if (state is UserCubitInitial) {
+                   final user = state.user;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Expanded(child: SizedBox()),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25),
-                            color: Colors.blue),
-                        margin: const EdgeInsets.all(8.0),
-                        padding: const EdgeInsets.all(3),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: user?.profileImage? == null ?
-                             GestureDetector(
-                              onTap: () =>
-                              Navigator.of(context).pushNamed(AppRoute.REGISTER),
-                              child:  Image.asset('assets/icons/add_new_profile_icon.png',
-                              scale: 11,
-                              color: Colors.white,) ,
-                             )
-                            : CircleAvatar(
+                            color: Colors.blue,
+                          ),
+                          margin: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(3),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              state.user == null ? GestureDetector(
+                    onTap: () =>
+                        Navigator.of(context).pushNamed(AppRoute.REGISTER),
+                    child: Image.asset(
+                      'assets/icons/add_new_profile_icon.png',
+                      scale: 11,
+                      color: Colors.white,
+                    ),
+                  ) :
+                              CircleAvatar(
                                 radius: 25,
-                                backgroundImage:NetworkImage(
-                                    user?.profileImage ?? "", scale: 2)
+                                backgroundImage: NetworkImage(
+                                  user?.profileImage ?? "",
+                                  scale: 2,
+                                ),
                               ),
-                            ),
-                                Expanded(
-                                  child: Text(
-                                 (user?.name ?? 'Cadastre-se') +
-                                 (' ') +
-                                 (user?.lastName ?? ''),
+                              Expanded(
+                                child: Text(
+                                  (user?.name ?? 'Cadastre-se') +
+                                      (' ') +
+                                      (user?.lastName ?? ''),
                                   style: const TextStyle(
-                                    color: Colors.white
+                                    color: Colors.black,
                                   ),
                                   overflow: TextOverflow.ellipsis,
-                                  maxLines: 1),
+                                  maxLines: 1,
                                 ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
+                    ],
+                  );
+                
               }
               if (state is UserCubitError) {
                 return OnErrorWidget(
-                    btnText: 'Erro',
-                    title: "erro no widget",
-                    content: 'content',
-                    onConfirmBtnTap: () => Navigator.of(context).pop());
+                  btnText: 'Erro',
+                  title: "erro no widget",
+                  content: 'content',
+                  onConfirmBtnTap: () => Navigator.of(context).pop(),
+                );
               }
-              throw Exception('deu ruim aqui');
+              return const SizedBox();
             },
           ),
         ),

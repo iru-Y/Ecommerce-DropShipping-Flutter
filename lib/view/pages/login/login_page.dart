@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trizi/domain/dtos/user_dto.dart';
 import 'package:trizi/utils/custom_styles.dart';
+import 'package:trizi/utils/dimens.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/button_large.dart.dart';
 import 'package:trizi/view/shared/form_login_register.dart';
@@ -27,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     authCubit = BlocProvider.of<AuthCubit>(context);
-
     super.initState();
   }
 
@@ -51,13 +51,13 @@ class _LoginPageState extends State<LoginPage> {
                         editingController: loginController,
                         prefixIcon: 'assets/icons/person_login_icon.png',
                         title: 'Usuário ou Email',
-                        inputType: TextInputType.emailAddress,
+                        inputType: TextInputType.text,
                       ),
                       FormLoginRegister(
                         editingController: passwordController,
                         prefixIcon: 'assets/icons/password_login_icon.png',
                         title: 'Entrar',
-                        inputType: TextInputType.visiblePassword,
+                        inputType: TextInputType.text,
                         sufixIcon: 'assets/icons/hidde_password_icon.png',
                       ),
                     ],
@@ -97,11 +97,13 @@ class _LoginPageState extends State<LoginPage> {
                 return const SizedBox();
               },
             ),
-            const SizedBox(height: 300),
+            spaceAround,
             ButtonLarge(
               onPressed: () async {
-                await authCubit.getToken(
-                    loginController.text.trim(), passwordController.text);
+                UserDto userDto = UserDto();
+                userDto.login = loginController.text;
+                userDto.password = passwordController.text;
+                await authCubit.getToken(userDto);
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,
               text: 'ENTRAR',

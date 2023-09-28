@@ -43,29 +43,38 @@ class _ListProductState extends State<ListProduct> {
                         width: 200,
                         height: 200,
                         margin: const EdgeInsets.all(8.0),
-                        child: Stack(
-                          children: [
-                             Positioned(
-                              bottom: 0,
-                              child: Container(
-                                width: 200,
-                                height: 120,
-                                decoration: const BoxDecoration(
-                                  color: ColorsCustom.CONTAINER_PRODUCT_COLOR,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                                top: 50,
-                                left: 50,
-                                right: 50,
-                                child: Image.network(
-                                  productData?.productImage ??
-                                      "Nenhuma imagem disponível",
-                                  height: 100,
-                                  width: 100,
-                                )),
-                          ],
+                        child: Card(
+                          color: ColorsCustom.CONTAINER_PRODUCT_COLOR,
+                          shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
+                          elevation: 4,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                  left: 50,
+                                  right: 50,
+                                  child: Image.network(
+                                    productData?.productImage ??
+                                        "Nenhuma imagem disponível",
+                                    height: 100,
+                                    width: 100,
+                                  )),
+                              Positioned(
+                                  top: 100,
+                                  left: 50,
+                                  right: 50,
+                                  child: Text(productData?.description ??
+                                      "Nenhuma descrição encontrada")),
+                                       Positioned(
+                                  top: 150,
+                                  left: 50,
+                                  right: 50,
+                                  child: Text('${productData?.quantity}+ Produtos' ??
+                                      '0', style: const TextStyle(
+                                        fontFamily: 'Dmsans-light'
+                                      ),))
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -85,5 +94,23 @@ class _ListProductState extends State<ListProduct> {
         )
       ],
     );
+  }
+}
+
+class MyClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    // Define a forma da curva
+    var path = Path();
+    path.lineTo(0, size.height); // Começa do canto inferior esquerdo
+    path.quadraticBezierTo(size.width / 2, size.height * 2, size.width,
+        size.height); // Define a curva quadrática
+    path.lineTo(size.width, 0); // Termina no canto inferior direito
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
   }
 }

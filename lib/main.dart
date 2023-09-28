@@ -19,7 +19,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -28,16 +27,18 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => UserCubit()),
         BlocProvider(create: (context) => ProductCubit())
       ],
-      
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'Dmsans-black'),
-        routes: {
-          AppRoute.PRESENTATION: (context) => const AprensentationView(),
-          AppRoute.HOME: (context) => const HomeView(),
-          AppRoute.LOGIN: (context) => const LoginView(),
-          AppRoute.REGISTER: (context) => const RegisterView()
-        },
+      child: WillPopScope(
+        onWillPop: () async => true,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(fontFamily: 'Dmsans-black'),
+          routes: {
+            AppRoute.PRESENTATION: (context) => const AprensentationView(),
+            AppRoute.HOME: (context) => const HomeView(),
+            AppRoute.LOGIN: (context) => const LoginView(),
+            AppRoute.REGISTER: (context) => const RegisterView()
+          },
+        ),
       ),
     );
   }

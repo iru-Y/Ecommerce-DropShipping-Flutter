@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:trizi/domain/dtos/user_dto.dart';
+import 'package:trizi/domain/exceptions/database_exception.dart';
 import 'package:trizi/domain/repositories/user_repository.dart';
 
 part 'user_state.dart';
@@ -17,7 +18,7 @@ class UserCubit extends Cubit<UserState> {
       return users;
     } catch (e) {
       emit(UserCubitError());
-      rethrow;
+      throw DatabaseException('$e');
     }
   }
 
@@ -30,19 +31,18 @@ class UserCubit extends Cubit<UserState> {
       return user;
     } catch (e) {
       emit(UserCubitError());
-      rethrow;
+      throw DatabaseException('$e');
     }
   }
 
   Future<void> post(UserDto userDto) async {
     emit(UserCubitLoading());
     try {
-      final resp = await userRepository.createUser(userDto);
       emit(UserCubitLoaded(user: userDto));
-      resp;
+      await userRepository.post(userDto);
     } catch (e) {
       emit(UserCubitError());
-      rethrow;
+      throw DatabaseException('$e');
     }
   }
 

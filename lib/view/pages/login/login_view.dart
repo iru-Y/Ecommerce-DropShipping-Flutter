@@ -9,7 +9,8 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(child: LoginPage())
+        body: LoginPage()
+      
       ),
     );
   }

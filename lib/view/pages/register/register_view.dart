@@ -7,8 +7,16 @@ class RegisterView extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SingleChildScrollView(child: RegisterPage()),
+    return const SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              RegisterPage(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
