@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trizi/domain/cubit/user_cubit.dart';
 import 'package:trizi/domain/dtos/user_dto.dart';
+import 'package:trizi/domain/models/auth.dart';
 import 'package:trizi/utils/custom_styles.dart';
 import 'package:trizi/utils/dimens.dart';
 import 'package:trizi/utils/routes.dart';
@@ -100,10 +102,12 @@ class _LoginPageState extends State<LoginPage> {
             spaceAround,
             ButtonLarge(
               onPressed: () async {
-                UserDto userDto = UserDto();
-                userDto.login = loginController.text;
-                userDto.password = passwordController.text;
-                await authCubit.getToken(userDto);
+                Auth<UserDto> userDto = Auth<UserDto>(
+                    user: UserDto(
+                        login: loginController.text,
+                        password: passwordController.text));
+                context.read<UserCubit>().getByLogin(userDto.user!.login!);
+                await authCubit.getToken(userDto.user!.login!, userDto.user!.password!);
               },
               backgroundColor: ColorsCustom.BUTTON_COLOR_LOGIN_1,
               text: 'ENTRAR',

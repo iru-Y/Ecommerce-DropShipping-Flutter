@@ -14,7 +14,6 @@ class HomeHeader extends StatelessWidget {
           child: ProfileInfoWidget(),
         ),
         Padding(
-
           padding: EdgeInsets.symmetric(vertical: 20),
           child: Text('Escolha por categoria'),
         ),

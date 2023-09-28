@@ -10,7 +10,6 @@ class LoginView extends StatelessWidget {
     return const SafeArea(
       child: Scaffold(
         body: LoginPage()
-      
       ),
     );
   }

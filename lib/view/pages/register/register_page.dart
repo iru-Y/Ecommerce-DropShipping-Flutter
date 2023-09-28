@@ -108,16 +108,16 @@ class _RegisterPageState extends State<RegisterPage> {
                             content: Column(
                               children: [
                                 FormLoginRegister(
-                                  editingController: emailController,
+                                  editingController: nameController,
                                   prefixIcon: 'assets/icons/mail_icon.png',
-                                  title: 'Email',
+                                  title: 'Nome',
                                   inputType: TextInputType.emailAddress,
                                 ),
                                 FormLoginRegister(
                                   editingController: loginController,
                                   prefixIcon:
                                       'assets/icons/person_login_icon.png',
-                                  title: 'Usuário',
+                                  title: 'Login',
                                   inputType: TextInputType.text,
                                 ),
                               ],
@@ -128,28 +128,28 @@ class _RegisterPageState extends State<RegisterPage> {
                             content: Column(
                               children: [
                                 FormLoginRegister(
-                                  editingController: nameController,
-                                  prefixIcon:
-                                      'assets/icons/password_login_icon.png',
-                                  title: 'Senha 1',
-                                  inputType: TextInputType.visiblePassword,
-                                  sufixIcon:
-                                      'assets/icons/hidde_password_icon.png',
-                                ),
-                                FormLoginRegister(
-                                  editingController: lastNameController,
-                                  prefixIcon:
-                                      'assets/icons/password_login_icon.png',
-                                  title: 'Senha 2',
-                                  inputType: TextInputType.visiblePassword,
-                                  sufixIcon:
-                                      'assets/icons/hidde_password_icon.png',
-                                ),
-                                FormLoginRegister(
                                   editingController: emailController,
                                   prefixIcon:
                                       'assets/icons/password_login_icon.png',
-                                  title: 'Senha 3',
+                                  title: 'email',
+                                  inputType: TextInputType.visiblePassword,
+                                  sufixIcon:
+                                      'assets/icons/hidde_password_icon.png',
+                                ),
+                                FormLoginRegister(
+                                  editingController: passwordController,
+                                  prefixIcon:
+                                      'assets/icons/password_login_icon.png',
+                                  title: 'password',
+                                  inputType: TextInputType.visiblePassword,
+                                  sufixIcon:
+                                      'assets/icons/hidde_password_icon.png',
+                                ),
+                                FormLoginRegister(
+                                  editingController: confirmPassController,
+                                  prefixIcon:
+                                      'assets/icons/password_login_icon.png',
+                                  title: 'Confirme',
                                   inputType: TextInputType.visiblePassword,
                                   sufixIcon:
                                       'assets/icons/hidde_password_icon.png',
@@ -198,10 +198,10 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Checkbox(
-                value: !isChecked,
+                value: isChecked,
                 onChanged: (_) {
                   setState(() {
-                    isChecked = false;
+                    isChecked = !isChecked;
                   });
                 },
               ),
@@ -264,5 +264,5 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-bool isChecked = true;
+bool isChecked = false;
 int currentStep = 0;
