@@ -1,14 +1,12 @@
 class UserDto {
-  String? login;
-  String? password;
   String? mail;
+  String? password;
   String? profileImage;
   String? name;
   String? lastName;
-  UserDto({this.name, this.lastName, this.profileImage, this.login, this.password, this.mail});
+  UserDto({this.name, this.lastName, this.profileImage, this.password, this.mail});
 
   UserDto.fromJson(Map<String, dynamic> json) {
-    login = json['login'];
     password = json['password'];
     mail = json['mail'];
     profileImage = json['profileImage'];
@@ -18,7 +16,6 @@ class UserDto {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['login'] = this.login;
     data['password'] = this.password;
     data['mail'] = this.mail;
     data['profileImage'] = this.profileImage;

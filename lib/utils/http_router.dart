@@ -1,6 +1,6 @@
 import 'dart:io';
 
-const apiPath = 'http://ec2-18-222-239-190.us-east-2.compute.amazonaws.com:8080';
+const apiPath = 'http://192.168.3.2:8080';
 
 class MyHttpOverrides extends HttpOverrides {
   @override

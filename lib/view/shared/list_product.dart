@@ -44,7 +44,7 @@ class _ListProductState extends State<ListProduct> {
                         height: 200,
                         margin: const EdgeInsets.all(8.0),
                         child: Card(
-                          color: ColorsCustom.CONTAINER_PRODUCT_COLOR,
+                          color: CustomColor.CONTAINER_PRODUCT_COLOR,
                           shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)),
                           elevation: 4,
@@ -100,12 +100,11 @@ class _ListProductState extends State<ListProduct> {
 class MyClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    // Define a forma da curva
     var path = Path();
-    path.lineTo(0, size.height); // Começa do canto inferior esquerdo
+    path.lineTo(0, size.height);
     path.quadraticBezierTo(size.width / 2, size.height * 2, size.width,
-        size.height); // Define a curva quadrática
-    path.lineTo(size.width, 0); // Termina no canto inferior direito
+        size.height);
+    path.lineTo(size.width, 0);
     return path;
   }
 

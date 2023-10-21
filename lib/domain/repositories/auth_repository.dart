@@ -8,11 +8,11 @@ import 'package:trizi/utils/http_router.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
-  final url = Uri.parse('$apiPath/auth/login');
+  final url = Uri.parse('$apiPath/auth/mail');
   final AuthService authService = AuthService();
-  Future<Auth<UserDto>> generateToken(String? login, String? password) async {
+  Future<Auth<UserDto>> generateToken(String? mail, String? password) async {
     var us =
-        UserDto(login: login, password: password);
+        UserDto(mail: mail, password: password);
 
     final jsonData = json.encode(us);
 

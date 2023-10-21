@@ -10,10 +10,10 @@ class AuthCubit extends Cubit<AuthCubitState> {
   AuthCubit() : super(AuthCubitInitial());
   AuthRepository authRepository = AuthRepository();
 
-  Future<Auth<UserDto>> getToken(String? login, String? password) async {
+  Future<Auth<UserDto>> getToken(String? mail, String? password) async {
     emit(AuthCubitLoading());
     try {
-      final token = await authRepository.generateToken(login, password);
+      final token = await authRepository.generateToken(mail, password);
       emit(AuthCubitLoaded());
       return token;
     } catch (e) {

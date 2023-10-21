@@ -8,4 +8,4 @@ const DMSANS_BLACK = TextStyle(fontSize: 25);
 // ignore: constant_identifier_names
 const DMSANS_LIGHT = TextStyle(
     fontFamily: 'dmsans_light',
-    color: ColorsCustom.TEXT_COLOR_LIGHT_1);
+    color: CustomColor.TEXT_COLOR_LIGHT_1);

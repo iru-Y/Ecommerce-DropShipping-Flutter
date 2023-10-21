@@ -18,9 +18,9 @@ class UserRepository {
     return null;
   }
 
- Future<UserDto?> getByLogin(String login) async {
+ Future<UserDto?> getByMail(String mail) async {
   final token = AuthService().token;
-  final url = Uri.parse('$apiPath/users/login/$login');
+  final url = Uri.parse('$apiPath/users/mail/$mail');
 
   var response =
       await http.get(url, headers: {'Authorization': 'Bearer $token'});
@@ -32,7 +32,7 @@ class UserRepository {
 }
 
   Future<void> post(UserDto userDto) async {
-    final url = Uri.parse('$apiPath/users/nodata');
+    final url = Uri.parse('$apiPath/users');
     final userJson = userDto.toJson();
     await http.post(
       url,

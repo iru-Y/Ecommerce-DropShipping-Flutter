@@ -8,7 +8,7 @@ import 'package:trizi/utils/http_router.dart';
 void main() {
   test('Test Content-Type Header', () async {
     final userDt = UserDto(
-        login: 'yurii', password: '91211561', mail: 'yutiritrh@hotmail.com');
+        password: '91211561', mail: 'yutiritrh@hotmail.com');
     final testUrl = Uri.parse('$apiPath/users/nodata');
     final response = await http.post(
       testUrl,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trizi/domain/cubit/auth_cubit_cubit.dart';
 import 'package:trizi/domain/cubit/user_cubit.dart';
+import 'package:trizi/domain/dtos/user_dto.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/components/on_error_widget.dart';
 
@@ -15,12 +17,22 @@ class ProfileInfoWidget extends StatefulWidget {
 class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
   late final UserCubit userCubit;
   late final AuthCubit authCubit;
+  late final UserDto user;
   @override
-  void initState() {
-    super.initState();
-    userCubit = BlocProvider.of<UserCubit>(context);
-    authCubit = BlocProvider.of<AuthCubit>(context);
-  }
+void initState() {
+  super.initState();
+  userCubit = BlocProvider.of<UserCubit>(context);
+  authCubit = BlocProvider.of<AuthCubit>(context);
+  callUser();
+}
+  
+  Future<void> callUser () async{
+        user =  userCubit.state.user!;
+          }
+  Future<void> clearAuthToken() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove('token');
+}
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +40,23 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: BlocBuilder<UserCubit, UserState>(
+          child: BlocBuilder(
             bloc: userCubit,
             builder: (context, state) {
+             
+             
               if (state is UserCubitLoading) {
                 return const CircularProgressIndicator();
               }
               if (state is UserCubitInitial) {
-                final user = state.user;
-
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Expanded(child: SizedBox()),
+                    Expanded(child: SizedBox(child: GestureDetector(
+                      onTap: clearAuthToken,
+                      child: Text('Sair'),
+                    )
+                    )),
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
@@ -55,7 +71,7 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
                             state.user == null
                                 ? GestureDetector(
                                     onTap: () => Navigator.of(context)
-                                        .pushNamed(AppRoute.REGISTER),
+                                        .pushNamed(AppRoute.MOBILE_REGISTER),
                                     child: Image.asset(
                                       'assets/icons/add_new_profile_icon.png',
                                       scale: 11,

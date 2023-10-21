@@ -7,7 +7,7 @@ import 'package:trizi/domain/repositories/user_repository.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  UserCubit() : super(UserCubitInitial());
+  UserCubit() : super(const UserCubitInitial());
   UserRepository userRepository = UserRepository();
 
   Future<List<UserDto>?> getAll() async {
@@ -22,12 +22,11 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<UserDto?> getByLogin(String login) async {
+  Future<UserDto?> getByMail(String mail) async {
     emit(UserCubitLoading());
     try {
-      final user = await userRepository.getByLogin(login);
+      final user = await userRepository.getByMail(mail);
       emit(UserCubitLoaded(user: user));
-      emit(UserCubitInitial());
       return user;
     } catch (e) {
       emit(UserCubitError());

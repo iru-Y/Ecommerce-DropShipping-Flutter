@@ -24,7 +24,7 @@ class SignSignup extends StatelessWidget {
             text: TextSpan(children: [
           TextSpan(
               text: text1,
-              style: const TextStyle(fontFamily: 'Dmsans-light', color: ColorsCustom.TEXT_COLOR_LIGHT_2)),
+              style: const TextStyle(fontFamily: 'Dmsans-light', color: CustomColor.TEXT_COLOR_LIGHT_2)),
           TextSpan(
               recognizer: TapGestureRecognizer()..onTap = onTap,
               text: text2,
