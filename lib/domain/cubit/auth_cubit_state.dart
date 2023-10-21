@@ -1,16 +1,20 @@
 part of 'auth_cubit_cubit.dart';
 
-@immutable
-sealed class AuthCubitState {}
+sealed class AuthCubitState {
+  String? token;
+
+  AuthCubitState({this.token});
+  
+}
 
 final class AuthCubitInitial extends AuthCubitState {}
 
 final class AuthCubitLoading extends AuthCubitState {}
 
 final class AuthCubitLoaded extends AuthCubitState {
-  final UserDto? user;
+   String? token;
 
-  AuthCubitLoaded({this.user});
+  AuthCubitLoaded({this.token});
 }
 
 final class AuthCubitError extends AuthCubitState {}

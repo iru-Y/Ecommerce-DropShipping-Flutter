@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trizi/domain/cubit/auth_cubit_cubit.dart';
 import 'package:trizi/domain/cubit/user_cubit.dart';
-import 'package:trizi/domain/dtos/user_dto.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/components/on_error_widget.dart';
 
@@ -15,24 +13,16 @@ class ProfileInfoWidget extends StatefulWidget {
 }
 
 class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
-  late final UserCubit userCubit;
-  late final AuthCubit authCubit;
-  late final UserDto user;
+  UserCubit userCubit = UserCubit();
+  AuthCubit authCubit = AuthCubit();
+  
   @override
 void initState() {
   super.initState();
   userCubit = BlocProvider.of<UserCubit>(context);
   authCubit = BlocProvider.of<AuthCubit>(context);
-  callUser();
 }
-  
-  Future<void> callUser () async{
-        user =  userCubit.state.user!;
-          }
-  Future<void> clearAuthToken() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove('token');
-}
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +34,20 @@ void initState() {
             bloc: userCubit,
             builder: (context, state) {
              
-             
               if (state is UserCubitLoading) {
                 return const CircularProgressIndicator();
               }
-              if (state is UserCubitInitial) {
+              if (state is UserCubitLoaded) {
+               final user =  userCubit.state.user;
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Expanded(child: SizedBox(child: GestureDetector(
-                      onTap: clearAuthToken,
+                      onTap: () {
+                        authCubit.resetToken();
+                        authCubit.resetForm();
+                        Navigator.of(context).pop();
+                      }  ,
                       child: Text('Sair'),
                     )
                     )),

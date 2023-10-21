@@ -14,7 +14,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
     emit(AuthCubitLoading());
     try {
       final token = await authRepository.generateToken(mail, password);
-      emit(AuthCubitLoaded());
+      emit(AuthCubitLoaded(token: token.token));
       return token;
     } catch (e) {
       emit(AuthCubitError());
@@ -24,5 +24,8 @@ class AuthCubit extends Cubit<AuthCubitState> {
 
   void resetForm() {
     emit(AuthCubitInitial());
+  }
+  void resetToken() {
+    state.token = null;
   }
 }

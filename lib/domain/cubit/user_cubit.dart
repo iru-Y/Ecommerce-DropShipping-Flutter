@@ -10,7 +10,7 @@ class UserCubit extends Cubit<UserState> {
   UserCubit() : super(const UserCubitInitial());
   UserRepository userRepository = UserRepository();
 
-  Future<List<UserDto>?> getAll() async {
+  Future<List<UserDto>> getAll() async {
     emit(UserCubitLoading());
     try {
       final users = await userRepository.getAll();
@@ -22,11 +22,13 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<UserDto?> getByMail(String mail) async {
+  Future<UserDto> getByMail(String mail, String token) async {
     emit(UserCubitLoading());
     try {
-      final user = await userRepository.getByMail(mail);
-      emit(UserCubitLoaded(user: user));
+      final user = await userRepository.getByMail(mail, token);
+      user == null 
+      ? throw Exception("o User do getByMail do userCubit está nullo") 
+      : emit(UserCubitLoaded(user: user)); 
       return user;
     } catch (e) {
       emit(UserCubitError());
@@ -37,7 +39,7 @@ class UserCubit extends Cubit<UserState> {
   Future<void> post(UserDto userDto) async {
     emit(UserCubitLoading());
     try {
-      emit(UserCubitLoaded(user: userDto));
+      emit(UserCubitLoaded());
       await userRepository.post(userDto);
     } catch (e) {
       emit(UserCubitError());
@@ -46,6 +48,6 @@ class UserCubit extends Cubit<UserState> {
   }
 
   void resetForm() {
-    emit(UserCubitInitial());
+    emit(const UserCubitInitial());
   }
 }

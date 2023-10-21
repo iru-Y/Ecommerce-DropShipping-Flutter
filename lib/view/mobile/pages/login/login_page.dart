@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trizi/domain/cubit/user_cubit.dart';
 import 'package:trizi/domain/dtos/user_dto.dart';
 import 'package:trizi/domain/models/auth.dart';
@@ -33,10 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     authCubit = BlocProvider.of<AuthCubit>(context);
     super.initState();
   }
-  Future<void> setAuthToken(String authToken) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('token', authToken);
-}
+ 
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -106,15 +102,16 @@ class _LoginPageState extends State<LoginPage> {
             spaceAround,
             ButtonLarge(
               onPressed: () async {
-                final userDto = Auth<UserDto>(
-                    user: UserDto(
-                        mail: mailController.text,
-                        password: passwordController.text));
-                context.read<UserCubit>().getByMail(userDto.user!.mail!);
-                await authCubit.getToken(
-                    userDto.user!.mail!, userDto.user!.password!);
-                  () async => await setAuthToken(userDto.token!);
-              },
+                  final userDto = Auth<UserDto>(
+    user: UserDto(
+      mail: mailController.text,
+      password: passwordController.text,
+    ),
+  );
+  await authCubit.getToken(userDto.user!.mail!, userDto.user!.password!);
+  final token = authCubit.state.token;
+  await context.read<UserCubit>().getByMail(userDto.user!.mail!, token!);
+  },
               backgroundColor: CustomColor.BUTTON_COLOR_LOGIN_1,
               text: 'ENTRAR',
               sufixIcon: 'assets/icons/btn_sign_icon.png',

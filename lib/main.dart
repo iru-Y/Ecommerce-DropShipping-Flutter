@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trizi/domain/cubit/auth_cubit_cubit.dart';
 import 'package:trizi/domain/cubit/product_cubit.dart';
 import 'package:trizi/domain/cubit/user_cubit.dart';
