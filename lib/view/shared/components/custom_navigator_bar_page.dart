@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trizi/utils/routes.dart';
 
 class CustomNavigatorBarPage extends StatefulWidget {
   const CustomNavigatorBarPage({Key? key}) : super(key: key);
@@ -23,37 +24,33 @@ mixin class Assets {
   ];
 }
 
-class _CustomNavigatorBarPageState extends State<CustomNavigatorBarPage> with Assets {
-   int currentIndex = 0;
+class _CustomNavigatorBarPageState extends State<CustomNavigatorBarPage>
+    with Assets {
+  int currentIndex = 0;
   void _onItemTapped(int index) {
     setState(() {
+      List<String> routes = AppRoute.navigatorRoutes;
+      Navigator.of(context).pushNamed(routes[index]);
       currentIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-   
-    print('printando o index 1 $currentIndex');
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: _onItemTapped,
       iconSize: 23,
-      items: List.generate(
-        items.length,
-        (i) {
-          print('printando o index 2 $currentIndex');
-          return BottomNavigationBarItem(
+      items: List.generate(items.length, (i) {
+        return BottomNavigationBarItem(
           backgroundColor: Colors.red,
-          label:  items[i].label,
+          label: items[i].label,
           icon: ImageIcon(
-           AssetImage(items[i].icon),
-          
+            AssetImage(items[i].icon),
             color: Colors.black,
           ),
         );
-        }
-      ),
+      }),
     );
   }
-  
 }

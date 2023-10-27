@@ -15,11 +15,21 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductLoading());
     try {
       emit(ProductLoaded(products: await productRepository.getAll()));
-      
     } catch (e) {
       emit(ProductError());
       rethrow;
     }
   }
-  
+
+  Future<Product?> getByDescription(String description) async {
+    emit(ProductLoading());
+    try {
+      emit(ProductLoaded(
+          product: await productRepository.getByDescription(description)));
+    } catch (e) {
+      emit(ProductError());
+      rethrow;
+    }
+    return null;
+  }
 }

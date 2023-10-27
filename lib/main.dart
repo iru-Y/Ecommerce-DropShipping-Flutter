@@ -12,6 +12,7 @@ import 'package:trizi/view/mobile/pages/home/home_view.dart';
 import 'package:trizi/view/mobile/pages/login/login_view.dart';
 import 'package:trizi/view/mobile/pages/presentation/apresentation_view.dart';
 import 'package:trizi/view/mobile/pages/register/register_view.dart';
+import 'package:trizi/view/mobile/pages/search/search_view.dart';
 
   main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +49,8 @@ class MyApp extends StatelessWidget {
                       AppRoute.MOBILE_LOGIN: (context) =>
                           const MobileLoginView(),
                       AppRoute.MOBILE_REGISTER: (context) =>
-                          const MobileRegisterView()
+                          const MobileRegisterView(),
+                          AppRoute.MOBILE_SEARCH: (context) => const SearchView()
                     }
                   : Platform.isLinux || Platform.isMacOS || Platform.isWindows
                       ? {

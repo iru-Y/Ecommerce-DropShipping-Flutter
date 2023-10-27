@@ -8,6 +8,7 @@ import 'package:trizi/utils/dimens.dart';
 import 'package:trizi/utils/routes.dart';
 import 'package:trizi/view/shared/button_large.dart.dart';
 import 'package:trizi/view/shared/form_login_register.dart';
+import 'package:trizi/view/shared/shared_preferences/shared_login.dart';
 import 'package:trizi/view/shared/sign_signup.dart';
 
 import '../../../../domain/cubit/auth_cubit_cubit.dart';
@@ -23,16 +24,32 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   late final AuthCubit authCubit;
-
-  final mailController = TextEditingController();
+  String? labelText;
+  TextEditingController mailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   void initState() {
     authCubit = BlocProvider.of<AuthCubit>(context);
+    _call();
     super.initState();
   }
- 
+
+  void _call() async {
+    var a = await SharedLogin.getLoginCredentials('mail');
+    if (mailController != null) {
+      setState(() {
+        labelText = a;
+        mailController.text = a ?? ''; // Defina o valor do controlador aqui
+      });
+    }
+  }
+
+  void _setLogin(String mail, String password) async {
+    await SharedLogin.setLoginCredentials(
+        mailController?.text ?? "");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -71,22 +88,12 @@ class _LoginPageState extends State<LoginPage> {
 
                 if (state is AuthCubitLoaded) {
                   Future.delayed(Duration.zero, () {
-                    Navigator.of(context).pushReplacementNamed(AppRoute.MOBILE_HOME);
+                    Navigator.of(context)
+                        .pushReplacementNamed(AppRoute.MOBILE_HOME);
                   });
-                }       
+                }
 
                 if (state is AuthCubitError) {
-                  if (mailController.text.isEmpty ||
-                      passwordController.text.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OnErrorWidget(
-                          btnText: 'Recarregar',
-                          title: 'Login ou senha não podem ficar nulos',
-                          content: 'Por favor, preencha todos os campos',
-                          onConfirmBtnTap: context.read<AuthCubit>().resetForm),
-                    );
-                  }
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: OnErrorWidget(
@@ -102,16 +109,20 @@ class _LoginPageState extends State<LoginPage> {
             spaceAround,
             ButtonLarge(
               onPressed: () async {
-                  final userDto = Auth<UserDto>(
-    user: UserDto(
-      mail: mailController.text,
-      password: passwordController.text,
-    ),
-  );
-  await authCubit.getToken(userDto.user!.mail!, userDto.user!.password!);
-  final token = authCubit.state.token;
-  await context.read<UserCubit>().getByMail(userDto.user!.mail!, token!);
-  },
+                final userDto = Auth<UserDto>(
+                  user: UserDto(
+                    mail: mailController?.text,
+                    password: passwordController.text,
+                  ),
+                );
+                await authCubit.getToken(
+                    userDto.user!.mail!, userDto.user!.password!);
+                final token = authCubit.state.token;
+                await context
+                    .read<UserCubit>()
+                    .getByMail(userDto.user!.mail!, token!);
+                _setLogin(userDto.user!.mail!, userDto.user!.password!);
+              },
               backgroundColor: CustomColor.BUTTON_COLOR_LOGIN_1,
               text: 'ENTRAR',
               sufixIcon: 'assets/icons/btn_sign_icon.png',

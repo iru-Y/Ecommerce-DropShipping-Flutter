@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trizi/view/mobile/pages/home/home_page.dart';
-import 'package:trizi/view/shared/components/custom_navigator_bar/custom_navigator_bar_page.dart';
+import 'package:trizi/view/shared/components/custom_navigator_bar_page.dart';
 import 'package:trizi/view/shared/list_product.dart';
 
 class MobileHomeView extends StatelessWidget {

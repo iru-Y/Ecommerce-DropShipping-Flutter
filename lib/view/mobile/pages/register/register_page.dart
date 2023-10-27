@@ -54,6 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 return Column(
                   children: [
                     ListView(
+
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         children: [
@@ -86,7 +87,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   OnErrorWidget(
                                     btnText: 'Recarregar',
                                     title: 'Por favor, preencha os campos',
-                                    content: 'Os campos não podem estar vazios',
+                                    content:
+                                        'Os campos não podem estar vazios',
                                     onConfirmBtnTap: () {
                                       Navigator.of(context).pop();
                                     },
@@ -108,14 +110,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   children: [
                                     FormLoginRegister(
                                       editingController: nameController,
-                                      prefixIcon: 'assets/icons/mail_icon.png',
                                       title: 'Nome',
                                       inputType: TextInputType.text,
                                     ),
                                     FormLoginRegister(
                                       editingController: lastNameController,
-                                      prefixIcon:
-                                          'assets/icons/person_login_icon.png',
                                       title: 'Login',
                                       inputType: TextInputType.text,
                                     ),
@@ -128,30 +127,22 @@ class _RegisterPageState extends State<RegisterPage> {
                                   children: [
                                     FormLoginRegister(
                                       editingController: emailController,
-                                      prefixIcon:
-                                          'assets/icons/password_login_icon.png',
                                       title: 'email',
-                                      inputType: TextInputType.visiblePassword,
-                                      sufixIcon:
-                                          'assets/icons/hidde_password_icon.png',
+                                      inputType:
+                                          TextInputType.visiblePassword,
                                     ),
                                     FormLoginRegister(
                                       editingController: passwordController,
-                                      prefixIcon:
-                                          'assets/icons/password_login_icon.png',
                                       title: 'password',
-                                      inputType: TextInputType.visiblePassword,
-                                      sufixIcon:
-                                          'assets/icons/hidde_password_icon.png',
+                                      inputType:
+                                          TextInputType.visiblePassword,
                                     ),
                                     FormLoginRegister(
-                                      editingController: confirmPassController,
-                                      prefixIcon:
-                                          'assets/icons/password_login_icon.png',
+                                      editingController:
+                                          confirmPassController,
                                       title: 'Confirme',
-                                      inputType: TextInputType.visiblePassword,
-                                      sufixIcon:
-                                          'assets/icons/hidde_password_icon.png',
+                                      inputType:
+                                          TextInputType.visiblePassword,
                                     ),
                                   ],
                                 ),
